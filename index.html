@@ -164,11 +164,11 @@
       <div class="ph" id="photoBox">
         <!-- 📷 Ваше фото: images/our-photo.jpg -->
         <img src="images/our-photo.jpg" alt="Мы с тобой" id="photoImg"
-             onerror="this.style.display='none';document.getElementById('phFallback').style.display='flex'">
+             onerror="if(!this.dataset.tried){this.dataset.tried='1';this.src='our-photo.jpg';}else{this.style.display='none';document.getElementById('phFallback').style.display='flex';}">
         <div class="ph-placeholder" id="phFallback" style="display:none">
           <span class="big">💑</span>
           <span>Здесь будет наше фото 💕</span>
-          <span style="font-size:12px;opacity:.75">загрузи файл images/our-photo.jpg в репозиторий</span>
+          <span style="font-size:12px;opacity:.75">загрузи фото: Add file → Upload files → our-photo.jpg</span>
         </div>
       </div>
     </div>
