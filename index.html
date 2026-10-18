@@ -2,17 +2,14 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Для тебя 💗</title>
 <!-- ================================================================
-     💌 САЙТ-ВАЛЕНТИНКА 💌
+     💌 САЙТ-ВАЛЕНТИНКА 💌  (v2 — исправлены обрезания, фон-SVG, баги)
      ----------------------------------------------------------------
-     📷 ФОТОГРАФИЯ: замени файл images/our-photo.jpg на ваше совместное
-        фото (можно просто перезаписать файл, имя оставить тем же).
-     ✏️  ПИСЬМО: открой script.js, найди переменную LETTER_TEXT
-        и замени текст на своё письмо (абзацы разделяются \n\n).
-     🔑 СЕКРЕТНОЕ СЛОВО: переменная SECRET_WORD в script.js
-        (сейчас "умница").
+     📷 ФОТОГРАФИЯ: файл images/our-photo.jpg (уже в архиве).
+     ✏️  ПИСЬМО: script.js → переменная LETTER_TEXT
+     🔑 СЕКРЕТНОЕ СЛОВО: script.js → переменная SECRET_WORD
      ================================================================ -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,129 +18,173 @@
 </head>
 <body>
 
-<!-- летающий фон -->
-<div id="bg"></div>
+<!-- ============ SVG-СПРАЙТ: нарисованные сердечки и звёздочки ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="gGloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffd3e0"/><stop offset=".55" stop-color="#ff9fbe"/><stop offset="1" stop-color="#ff7ba6"/>
+    </linearGradient>
+    <linearGradient id="gPeach" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe2d2"/><stop offset="1" stop-color="#ffb39c"/>
+    </linearGradient>
+    <linearGradient id="gMilk" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff0f4"/><stop offset="1" stop-color="#ffc4d6"/>
+    </linearGradient>
+    <!-- единый контур сердца -->
+    <path id="hpath" d="M16 28.5 C7.5 21.5 1.2 15.6 1.2 9.2 C1.2 4.2 4.9 1 9.1 1 C12 1 14.6 2.7 16 5.4 C17.4 2.7 20 1 22.9 1 C27.1 1 30.8 4.2 30.8 9.2 C30.8 15.6 24.5 21.5 16 28.5 Z"/>
+    <!-- варианты сердечек -->
+    <g id="h-glossy"><use href="#hpath" fill="url(#gGloss)"/><ellipse cx="10.5" cy="8" rx="4.2" ry="2.4" fill="#ffffff" opacity=".6" transform="rotate(-22 10.5 8)"/><circle cx="23" cy="12" r="1" fill="#fff" opacity=".5"/></g>
+    <g id="h-glass"><use href="#hpath" fill="url(#gMilk)" opacity=".9"/><ellipse cx="11" cy="8.4" rx="3.6" ry="2" fill="#fff" opacity=".75" transform="rotate(-22 11 8.4)"/></g>
+    <g id="h-peach"><use href="#hpath" fill="url(#gPeach)" opacity=".85"/><circle cx="22.5" cy="9" r="1.1" fill="#fff" opacity=".7"/></g>
+    <g id="h-matte"><use href="#hpath" fill="#ff9ebb" opacity=".4"/></g>
+    <g id="h-outline"><use href="#hpath" fill="rgba(255,255,255,.14)" stroke="#f0739f" stroke-width="1.5" opacity=".6"/></g>
+    <g id="h-dots"><use href="#hpath" fill="url(#gGloss)" opacity=".9"/><circle cx="9" cy="9" r="1" fill="#fff" opacity=".85"/><circle cx="13" cy="6.5" r=".7" fill="#fff" opacity=".7"/><circle cx="22" cy="11" r=".8" fill="#fff" opacity=".6"/></g>
+    <!-- четырёхлучевая звёздочка и блёстка -->
+    <path id="star4" d="M8 0 L9.7 6.3 L16 8 L9.7 9.7 L8 16 L6.3 9.7 L0 8 L6.3 6.3 Z"/>
+    <path id="spark" d="M4 0 L4.9 3.1 L8 4 L4.9 4.9 L4 8 L3.1 4.9 L0 4 L3.1 3.1 Z"/>
+    <g id="st-soft"><use href="#star4" fill="#ffd9e6" opacity=".9"/><use href="#star4" fill="none" stroke="#ff9fbe" stroke-width=".5" opacity=".6"/></g>
+    <g id="st-gold"><use href="#star4" fill="#ffe9c9" opacity=".95"/></g>
+  </defs>
+</svg>
+
+<!-- ================= ФОН: градиент, боке, летающие сердечки ================= -->
+<div id="bg" aria-hidden="true">
+  <div class="bokeh b1"></div>
+  <div class="bokeh b2"></div>
+  <div class="bokeh b3"></div>
+  <div class="bokeh b4"></div>
+  <div class="bokeh b5"></div>
+  <!-- сердечки и звёздочки создаёт script.js один раз -->
+</div>
 
 <!-- ================= ЭКРАН 1 ================= -->
 <section class="screen active" id="s1">
-  <div class="card">
-    <span class="deco" style="top:14px;left:16px">🎀</span>
-    <span class="deco" style="top:18px;right:20px;animation-delay:.7s">✨</span>
-    <span class="deco" style="bottom:16px;left:22px;animation-delay:1.2s">💗</span>
-    <span class="deco" style="bottom:12px;right:16px;animation-delay:.4s">🌸</span>
+  <div class="inner">
+    <div class="card">
+      <span class="deco" style="top:14px;left:16px">🎀</span>
+      <span class="deco" style="top:18px;right:20px;animation-delay:.7s">✨</span>
+      <span class="deco" style="bottom:16px;left:22px;animation-delay:1.2s">💗</span>
+      <span class="deco" style="bottom:12px;right:16px;animation-delay:.4s">🌸</span>
 
-    <!-- котик -->
-    <svg class="cat" viewBox="0 0 120 110" aria-hidden="true">
-      <path class="tail" d="M14 78 Q2 70 6 54 Q8 46 15 48" fill="none" stroke="#f4b8c9" stroke-width="7" stroke-linecap="round"/>
-      <ellipse class="body" cx="60" cy="74" rx="34" ry="28" fill="#fff" stroke="#f4b8c9" stroke-width="3"/>
-      <path d="M34 40 L28 18 L48 30 Z" fill="#fff" stroke="#f4b8c9" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M86 40 L92 18 L72 30 Z" fill="#fff" stroke="#f4b8c9" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M36 36 L33 24 L44 31 Z" fill="#ffd0dd"/>
-      <path d="M84 36 L87 24 L76 31 Z" fill="#ffd0dd"/>
-      <circle cx="60" cy="48" r="26" fill="#fff" stroke="#f4b8c9" stroke-width="3"/>
-      <g class="eye"><circle cx="50" cy="46" r="3.4" fill="#5a3a44"/></g>
-      <g class="eye" style="animation-delay:.05s"><circle cx="70" cy="46" r="3.4" fill="#5a3a44"/></g>
-      <path d="M57 55 Q60 58 63 55" fill="none" stroke="#e0457b" stroke-width="2.4" stroke-linecap="round"/>
-      <path d="M60 53 L60 56" stroke="#e0457b" stroke-width="2.2" stroke-linecap="round"/>
-      <ellipse cx="42" cy="55" rx="5" ry="3" fill="#ffc9d9" opacity=".8"/>
-      <ellipse cx="78" cy="55" rx="5" ry="3" fill="#ffc9d9" opacity=".8"/>
-      <g class="paw">
-        <ellipse cx="88" cy="82" rx="9" ry="7" fill="#fff" stroke="#f4b8c9" stroke-width="3"/>
-        <path d="M84 79 v6 M90 79 v6" stroke="#f4b8c9" stroke-width="2" stroke-linecap="round"/>
-      </g>
-      <path d="M60 86 c-4-5-12-3-12 3 c0 5 8 8 12 4 c4 4 12 1 12-4 c0-6-8-8-12-3z" fill="#ff8fb4"/>
-    </svg>
+      <!-- котик -->
+      <svg class="cat" viewBox="0 0 120 110" aria-hidden="true">
+        <path class="tail" d="M14 78 Q2 70 6 54 Q8 46 15 48" fill="none" stroke="#f4b8c9" stroke-width="7" stroke-linecap="round"/>
+        <ellipse class="body" cx="60" cy="74" rx="34" ry="28" fill="#fff" stroke="#f4b8c9" stroke-width="3"/>
+        <path d="M34 40 L28 18 L48 30 Z" fill="#fff" stroke="#f4b8c9" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M86 40 L92 18 L72 30 Z" fill="#fff" stroke="#f4b8c9" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M36 36 L33 24 L44 31 Z" fill="#ffd0dd"/>
+        <path d="M84 36 L87 24 L76 31 Z" fill="#ffd0dd"/>
+        <circle cx="60" cy="48" r="26" fill="#fff" stroke="#f4b8c9" stroke-width="3"/>
+        <g class="eye"><circle cx="50" cy="46" r="3.4" fill="#5a3a44"/></g>
+        <g class="eye" style="animation-delay:.05s"><circle cx="70" cy="46" r="3.4" fill="#5a3a44"/></g>
+        <path d="M57 55 Q60 58 63 55" fill="none" stroke="#e0457b" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M60 53 L60 56" stroke="#e0457b" stroke-width="2.2" stroke-linecap="round"/>
+        <ellipse cx="42" cy="55" rx="5" ry="3" fill="#ffc9d9" opacity=".8"/>
+        <ellipse cx="78" cy="55" rx="5" ry="3" fill="#ffc9d9" opacity=".8"/>
+        <g class="paw">
+          <ellipse cx="88" cy="82" rx="9" ry="7" fill="#fff" stroke="#f4b8c9" stroke-width="3"/>
+          <path d="M84 79 v6 M90 79 v6" stroke="#f4b8c9" stroke-width="2" stroke-linecap="round"/>
+        </g>
+        <path d="M60 86 c-4-5-12-3-12 3 c0 5 8 8 12 4 c4 4 12 1 12-4 c0-6-8-8-12-3z" fill="#ff8fb4"/>
+      </svg>
 
-    <p class="q-pre">У меня к тебе один очень важный вопрос… 💗</p>
-    <h1 class="q-big hand">А ты меня любишь? 🥺💕</h1>
-    <div class="btn-row">
-      <button class="btn btn-pink" id="btnYes">ДААА 💗</button>
-      <button class="btn btn-white" id="btnNo">НЕТ 🙄</button>
+      <p class="q-pre">У меня к тебе один очень важный вопрос… 💗</p>
+      <h1 class="q-big hand">А ты меня любишь? 🥺💕</h1>
+      <div class="btn-row">
+        <button class="btn btn-pink" id="btnYes">ДААА 💗</button>
+        <button class="btn btn-white" id="btnNo">НЕТ 🙄</button>
+      </div>
+      <p class="hint-msg" id="s1hint"></p>
     </div>
-    <p class="hint-msg" id="s1hint"></p>
   </div>
 </section>
 
 <!-- ================= ЭКРАН 2 ================= -->
 <section class="screen" id="s2">
-  <div class="card">
-    <span class="deco" style="top:14px;left:18px">🌷</span>
-    <span class="deco" style="top:16px;right:18px;animation-delay:.9s">✨</span>
-    <svg class="cat" viewBox="0 0 120 110" style="width:clamp(100px,30vw,140px)">
-      <ellipse class="body" cx="60" cy="76" rx="32" ry="26" fill="#fff" stroke="#f4b8c9" stroke-width="3"/>
-      <path d="M36 42 L30 20 L50 32 Z" fill="#fff" stroke="#f4b8c9" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M84 42 L90 20 L70 32 Z" fill="#fff" stroke="#f4b8c9" stroke-width="3" stroke-linejoin="round"/>
-      <circle cx="60" cy="50" r="25" fill="#fff" stroke="#f4b8c9" stroke-width="3"/>
-      <g class="eye" style="animation:none"><circle cx="50" cy="48" r="3.4" fill="#5a3a44"/></g>
-      <g class="eye" style="animation:none"><circle cx="70" cy="48" r="3.4" fill="#5a3a44"/></g>
-      <path d="M44 42 l8 3 M76 42 l-8 3" stroke="#f4b8c9" stroke-width="2.4" stroke-linecap="round"/>
-      <path d="M57 58 Q60 60 63 58" fill="none" stroke="#e0457b" stroke-width="2.4" stroke-linecap="round"/>
-      <ellipse cx="42" cy="57" rx="5" ry="3" fill="#ffc9d9" opacity=".8"/>
-      <ellipse cx="78" cy="57" rx="5" ry="3" fill="#ffc9d9" opacity=".8"/>
-    </svg>
-    <p class="q-pre">Хммм… а кто же у нас тут такая прекрасная? 🤨💕</p>
-    <h2 class="q-big hand" style="font-size:clamp(28px,7.5vw,42px)">Как я тебя называю?</h2>
-    <div class="input-wrap">
-      <input id="secretInput" type="text" placeholder="Введи секретное слово…" autocomplete="off">
-      <button class="btn btn-pink" id="checkBtn">Проверить 💗</button>
+  <div class="inner">
+    <div class="card">
+      <span class="deco" style="top:14px;left:18px">🌷</span>
+      <span class="deco" style="top:16px;right:18px;animation-delay:.9s">✨</span>
+      <svg class="cat" viewBox="0 0 120 110" style="width:clamp(100px,30vw,140px)">
+        <ellipse class="body" cx="60" cy="76" rx="32" ry="26" fill="#fff" stroke="#f4b8c9" stroke-width="3"/>
+        <path d="M36 42 L30 20 L50 32 Z" fill="#fff" stroke="#f4b8c9" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M84 42 L90 20 L70 32 Z" fill="#fff" stroke="#f4b8c9" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="60" cy="50" r="25" fill="#fff" stroke="#f4b8c9" stroke-width="3"/>
+        <g class="eye" style="animation:none"><circle cx="50" cy="48" r="3.4" fill="#5a3a44"/></g>
+        <g class="eye" style="animation:none"><circle cx="70" cy="48" r="3.4" fill="#5a3a44"/></g>
+        <path d="M44 42 l8 3 M76 42 l-8 3" stroke="#f4b8c9" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M57 58 Q60 60 63 58" fill="none" stroke="#e0457b" stroke-width="2.4" stroke-linecap="round"/>
+        <ellipse cx="42" cy="57" rx="5" ry="3" fill="#ffc9d9" opacity=".8"/>
+        <ellipse cx="78" cy="57" rx="5" ry="3" fill="#ffc9d9" opacity=".8"/>
+      </svg>
+      <p class="q-pre">Хммм… а кто же у нас тут такая прекрасная? 🤨💕</p>
+      <h2 class="q-big hand" style="font-size:clamp(28px,7.5vw,42px)">Как я тебя называю?</h2>
+      <div class="input-wrap">
+        <input id="secretInput" type="text" placeholder="Введи секретное слово…" autocomplete="off" enterkeyhint="go">
+        <button class="btn btn-pink" id="checkBtn">Проверить 💗</button>
+      </div>
+      <p class="hint-msg" id="s2hint"></p>
+      <button class="btn btn-pink" id="nextBtn">Дальше 💌</button>
     </div>
-    <p class="hint-msg" id="s2hint"></p>
-    <button class="btn btn-pink" id="nextBtn">Дальше 💌</button>
   </div>
 </section>
 
 <!-- ================= ЭКРАН 3 ================= -->
 <section class="screen" id="s3">
-  <div class="scene" id="envScene">
-    <p class="q-pre">Я кое-что приготовил для тебя…</p>
-    <div class="envelope" id="envelope">
-      <div class="env-body"></div>
-      <div class="env-letter-peek"></div>
-      <div class="env-flap"></div>
-      <div class="env-seal">💗</div>
-      <div class="env-label">Для самого любимого человечка 💌</div>
+  <div class="inner">
+    <div class="scene" id="envScene">
+      <p class="q-pre">Я кое-что приготовил для тебя…</p>
+      <div class="envelope" id="envelope">
+        <div class="env-body"></div>
+        <div class="env-letter-peek" id="envPeek"></div>
+        <div class="env-flap" id="envFlap"></div>
+        <div class="env-seal" id="envSeal">💗</div>
+        <div class="env-label">Для самого любимого человечка 💌</div>
+      </div>
+      <div class="btn-row"><button class="btn btn-pink" id="openBtn">Открыть письмо 💗</button></div>
     </div>
-    <div class="btn-row"><button class="btn btn-pink" id="openBtn">Открыть письмо 💗</button></div>
-  </div>
 
-  <div class="letter-full" id="letterFull">
-    <div class="hand" id="letterText"></div>
-    <button class="btn btn-pink" id="readBtn">Прочитала?))) 🥹💕</button>
+    <div class="letter-full" id="letterFull">
+      <div class="hand letter-text" id="letterText"></div>
+      <button class="btn btn-pink" id="readBtn">Прочитала?))) 🥹💕</button>
+    </div>
   </div>
 </section>
 
 <!-- ================= ЭКРАН 4 ================= -->
 <section class="screen" id="s4">
-  <h2 class="q-big hand" style="font-size:clamp(28px,7.5vw,44px)">И последнее, моя любимая… 💗</h2>
+  <div class="inner">
+    <h2 class="q-big hand" style="font-size:clamp(28px,7.5vw,44px)">И последнее, моя любимая… 💗</h2>
 
-  <div class="photo-frame">
-    <span class="frame-heart" style="top:-16px;left:-10px">💗</span>
-    <span class="frame-heart" style="top:-20px;right:22%;animation-delay:.6s">✨</span>
-    <span class="frame-heart" style="bottom:-14px;right:-8px;animation-delay:1s">🎀</span>
-    <span class="frame-heart" style="bottom:-18px;left:18%;animation-delay:.3s">💕</span>
-    <div class="ph" id="photoBox">
-      <!-- 📷 Ваше фото лежит в images/our-photo.jpg.
-           Если файла нет — покажется милый placeholder. -->
-      <img src="images/our-photo.jpg" alt="Мы с тобой" id="photoImg" onerror="this.style.display='none';document.getElementById('phFallback').style.display='flex'">
-      <div class="ph-placeholder" id="phFallback" style="display:none">
-        <span class="big">💑</span>
-        <span>Здесь будет наше фото 💕</span>
-        <span style="font-size:12px;opacity:.75">положи файл images/our-photo.jpg</span>
+    <div class="photo-frame">
+      <span class="frame-heart" style="top:-16px;left:-10px">💗</span>
+      <span class="frame-heart" style="top:-20px;right:22%;animation-delay:.6s">✨</span>
+      <span class="frame-heart" style="bottom:-14px;right:-8px;animation-delay:1s">🎀</span>
+      <span class="frame-heart" style="bottom:-18px;left:18%;animation-delay:.3s">💕</span>
+      <div class="ph" id="photoBox">
+        <!-- 📷 Ваше фото: images/our-photo.jpg -->
+        <img src="images/our-photo.jpg" alt="Мы с тобой" id="photoImg"
+             onerror="this.style.display='none';document.getElementById('phFallback').style.display='flex'">
+        <div class="ph-placeholder" id="phFallback" style="display:none">
+          <span class="big">💑</span>
+          <span>Здесь будет наше фото 💕</span>
+          <span style="font-size:12px;opacity:.75">загрузи файл images/our-photo.jpg в репозиторий</span>
+        </div>
       </div>
     </div>
+
+    <p class="compliment"><b>Знаешь, что самое прекрасное в этом мире?</b><br><br>
+      Это даже не звёзды, не закаты и не самые красивые места.<br><br>
+      <b>Это ты. 💗</b><br><br>
+      Твоя улыбка способна сделать мой день лучше. Твои глаза — задержать мой взгляд. Твоё присутствие — сделать обычный момент особенным.<br><br>
+      Ты красивая не только внешне. В тебе есть что-то такое, что невозможно объяснить одним словом. И чем больше я тебя узнаю, тем больше понимаю, насколько ты удивительная.<br><br>
+      Мне хочется, чтобы ты чаще улыбалась, меньше грустила и никогда не забывала, насколько ты прекрасна.<br><br>
+      Ты — моя любимая девочка, моя умница и моё маленькое счастье. 🎀</p>
+
+    <p class="final-line">Я бы выбрал тебя. Снова. И снова. И снова. <span class="beat">♡</span></p>
+
+    <div class="btn-row"><button class="btn btn-pink" id="hugBtn">Обнять меня 🫂</button></div>
   </div>
-
-  <p class="compliment"><b>Знаешь, что самое прекрасное в этом мире?</b><br><br>
-    Это даже не звёзды, не закаты и не самые красивые места.<br><br>
-    <b>Это ты. 💗</b><br><br>
-    Твоя улыбка способна сделать мой день лучше. Твои глаза — задержать мой взгляд. Твоё присутствие — сделать обычный момент особенным.<br><br>
-    Ты красивая не только внешне. В тебе есть что-то такое, что невозможно объяснить одним словом. И чем больше я тебя узнаю, тем больше понимаю, насколько ты удивительная.<br><br>
-    Мне хочется, чтобы ты чаще улыбалась, меньше грустила и никогда не забывала, насколько ты прекрасна.<br><br>
-    Ты — моя любимая девочка, моя умница и моё маленькое счастье. 🎀</p>
-
-  <p class="final-line">Я бы выбрал тебя. Снова. И снова. И снова. <span class="beat">♡</span></p>
-
-  <div class="btn-row"><button class="btn btn-pink" id="hugBtn">Обнять меня 🫂</button></div>
 </section>
 
 <!-- обнимашки -->
